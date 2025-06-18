@@ -74,67 +74,50 @@ npm install
 yarn install
 ```
 
-### 3. 環境変数の設定
-
-`.env.local` ファイルを作成:
+### 3. セットアップスクリプトの実行
 
 ```bash
-# Supabase
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+# セットアップ状況の確認
+npm run setup:check
 
-# Anthropic
-ANTHROPIC_API_KEY=your_anthropic_api_key
-
-# GitHub OAuth (オプション)
-GITHUB_CLIENT_ID=your_github_client_id
-GITHUB_CLIENT_SECRET=your_github_client_secret
-
-# GitLab OAuth (オプション)
-GITLAB_CLIENT_ID=your_gitlab_client_id
-GITLAB_CLIENT_SECRET=your_gitlab_client_secret
-
-# アプリケーション
-NEXT_PUBLIC_SITE_URL=http://localhost:3000
+# 環境変数ファイルの作成
+npm run setup:env
 ```
 
-### 4. データベースのセットアップ
+### 4. Supabaseプロジェクトのセットアップ
 
-Supabase ダッシュボードで以下のSQLを実行:
+詳細な手順は [`setup-guides/SUPABASE_SETUP.md`](setup-guides/SUPABASE_SETUP.md) を参照してください。
 
-```sql
--- ユーザープロファイル
-CREATE TABLE public.user_profiles (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE UNIQUE NOT NULL,
-  username VARCHAR(255) NOT NULL,
-  display_name VARCHAR(255),
-  avatar_url TEXT,
-  github_data JSONB,
-  gitlab_data JSONB,
-  created_at TIMESTAMPTZ DEFAULT NOW(),
-  updated_at TIMESTAMPTZ DEFAULT NOW()
-);
+1. **Supabaseプロジェクト作成**
+   - [Supabase Dashboard](https://app.supabase.io) でプロジェクト作成
+   - Asia-Pacific (東京) リージョンを選択
 
--- RLS有効化
-ALTER TABLE user_profiles ENABLE ROW LEVEL SECURITY;
+2. **環境変数設定**
+   - `.env.local` を編集し、Supabase URLとAPIキーを設定
 
--- ポリシー設定
-CREATE POLICY "Users can manage own profile" ON user_profiles
-  FOR ALL USING (auth.uid() = user_id);
-```
+3. **データベーステーブル作成**
+   - Supabase SQL Editorで `sql/01_create_tables.sql` を実行
+   - 続いて `sql/02_setup_rls.sql` を実行（RLS + トリガー設定）
 
-完全なスキーマは [`docs/04_DATABASE_DESIGN.md`](docs/04_DATABASE_DESIGN.md) を参照してください。
+4. **GitHub OAuth設定**
+   - GitHub OAuth Appを作成
+   - Supabase AuthenticationでGitHubプロバイダーを有効化
 
-### 5. 開発サーバーの起動
+### 5. セットアップ確認と開発サーバー起動
 
 ```bash
+# 最終セットアップ確認
+npm run setup:check
+
+# 開発サーバー起動
 npm run dev
-# または
-yarn dev
 ```
 
 ブラウザで [http://localhost:3000](http://localhost:3000) にアクセス
+
+> 💡 **セットアップでお困りの場合**
+> 
+> `npm run setup:check` でセットアップ状況を確認し、エラーがある場合は [`setup-guides/SUPABASE_SETUP.md`](setup-guides/SUPABASE_SETUP.md) のトラブルシューティングを参照してください。
 
 ## 📖 使用方法
 
