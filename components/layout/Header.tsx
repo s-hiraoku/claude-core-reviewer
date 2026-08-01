@@ -2,7 +2,6 @@
 
 import Link from 'next/link'
 import { AuthButton } from '@/components/auth/AuthButton'
-import { Button } from '@/components/ui/button'
 import { Code2 } from 'lucide-react'
 
 export function Header() {

@@ -18,7 +18,7 @@
     "test:coverage": "vitest --coverage",
     "test:e2e": "playwright test",
     "setup:check": "node scripts/check-setup.js",
-    "setup:env": "cp .env.example .env.local"
+    "setup:env": "node -e \"require('fs').copyFileSync('.env.example','.env.local')\""
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.27.0",

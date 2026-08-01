@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Github, GitlabIcon as Gitlab, LogOut, User, Settings } from 'lucide-react'
+import { Github, Gitlab, LogOut, User, Settings } from 'lucide-react'
 import Link from 'next/link'
 
 export function AuthButton() {

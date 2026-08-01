@@ -12,12 +12,14 @@ export async function GET() {
       environment: process.env.NODE_ENV || 'development',
     }
 
-    return NextResponse.json(health)
+    return NextResponse.json(health, {
+      headers: { 'Cache-Control': 'no-store' },
+    })
   } catch (error) {
     console.error('Health check failed:', error)
     return NextResponse.json(
       { status: 'unhealthy', error: 'Internal server error' },
-      { status: 500 }
+      { status: 500, headers: { 'Cache-Control': 'no-store' } }
     )
   }
 }

@@ -1,6 +1,8 @@
 -- Claude Code Review Assistant - Database Tables
 -- このファイルはSupabase SQL Editorで実行してください
 
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+
 -- 1. ユーザープロファイルテーブル
 CREATE TABLE IF NOT EXISTS user_profiles (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
@@ -9,7 +11,7 @@ CREATE TABLE IF NOT EXISTS user_profiles (
   display_name TEXT,
   avatar_url TEXT,
   email TEXT,
-  provider TEXT NOT NULL, -- 'github' or 'gitlab'
+  provider TEXT NOT NULL CHECK (provider IN ('github', 'gitlab')),
   provider_id TEXT NOT NULL,
   github_data JSONB,
   gitlab_data JSONB,

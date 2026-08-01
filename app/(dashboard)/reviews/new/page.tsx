@@ -1,12 +1,12 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { AuthGuard } from '@/components/auth/AuthGuard'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Github, GitlabIcon as Gitlab, ExternalLink, AlertCircle, CheckCircle } from 'lucide-react'
+import { Github, Gitlab, ExternalLink, AlertCircle, CheckCircle } from 'lucide-react'
 
 export default function NewReviewPage() {
   const [url, setUrl] = useState('')
@@ -18,8 +18,14 @@ export default function NewReviewPage() {
     number?: string
     error?: string
   } | null>(null)
+  const validationTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  useEffect(() => () => {
+    if (validationTimerRef.current) clearTimeout(validationTimerRef.current)
+  }, [])
 
   const validateUrl = (inputUrl: string) => {
+    if (validationTimerRef.current) clearTimeout(validationTimerRef.current)
     setIsValidating(true)
     
     // GitHub PR URL の正規表現
@@ -30,20 +36,20 @@ export default function NewReviewPage() {
     const githubMatch = inputUrl.match(githubPrRegex)
     const gitlabMatch = inputUrl.match(gitlabMrRegex)
 
-    setTimeout(() => {
+    validationTimerRef.current = setTimeout(() => {
       if (githubMatch) {
         setValidationResult({
           isValid: true,
           provider: 'github',
           repo: `${githubMatch[1]}/${githubMatch[2]}`,
-          number: githubMatch[3]
+          number: githubMatch[3]!
         })
       } else if (gitlabMatch) {
         setValidationResult({
           isValid: true,
           provider: 'gitlab',
           repo: `${gitlabMatch[1]}/${gitlabMatch[2]}`,
-          number: gitlabMatch[3]
+          number: gitlabMatch[3]!
         })
       } else if (inputUrl) {
         setValidationResult({
@@ -54,6 +60,7 @@ export default function NewReviewPage() {
         setValidationResult(null)
       }
       setIsValidating(false)
+      validationTimerRef.current = null
     }, 500)
   }
 
@@ -64,6 +71,8 @@ export default function NewReviewPage() {
     if (newUrl.trim()) {
       validateUrl(newUrl.trim())
     } else {
+      if (validationTimerRef.current) clearTimeout(validationTimerRef.current)
+      validationTimerRef.current = null
       setValidationResult(null)
       setIsValidating(false)
     }

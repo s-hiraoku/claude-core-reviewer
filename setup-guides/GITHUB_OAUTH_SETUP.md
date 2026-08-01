@@ -51,7 +51,7 @@ GitHubボタンをクリックして、正常にGitHubの認証画面にリダ�
 Supabase Dashboard → Authentication → Providers → GitHub:
 - **Enable GitHub provider**: オン
 - **Client ID**: `Ov23lixgl4HBoaujeyIq`
-- **Client Secret**: `fe8d8f8fae1deaff91ad523d791c49b13a1f23b6`
+- **Client Secret**: `<your_github_oauth_client_secret>`
 
 ### 成功の確認方法
 

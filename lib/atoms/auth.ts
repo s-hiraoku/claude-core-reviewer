@@ -27,6 +27,7 @@ export const setSessionAtom = atom(
   (get, set, session: Session | null) => {
     set(sessionAtom, session)
     set(userAtom, session?.user ?? null)
+    set(loadingAtom, false)
   }
 )
 

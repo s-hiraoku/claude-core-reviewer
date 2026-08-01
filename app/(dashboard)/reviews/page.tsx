@@ -35,8 +35,9 @@ export default function ReviewsPage() {
         <CardContent>
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="flex-1">
-              <label className="block text-sm font-medium mb-2">検索</label>
+              <label htmlFor="review-search" className="block text-sm font-medium mb-2">検索</label>
               <input
+                id="review-search"
                 type="text"
                 placeholder="リポジトリ名、PR番号で検索..."
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -44,8 +45,9 @@ export default function ReviewsPage() {
               />
             </div>
             <div className="sm:w-48">
-              <label className="block text-sm font-medium mb-2">ステータス</label>
-              <select 
+              <label htmlFor="review-status" className="block text-sm font-medium mb-2">ステータス</label>
+              <select
+                id="review-status"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 disabled
               >

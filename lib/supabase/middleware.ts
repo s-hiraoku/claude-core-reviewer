@@ -19,16 +19,6 @@ export async function middleware(request: NextRequest) {
           return request.cookies.get(name)?.value
         },
         set(name: string, value: string, options: any) {
-          request.cookies.set({
-            name,
-            value,
-            ...options,
-          })
-          response = NextResponse.next({
-            request: {
-              headers: request.headers,
-            },
-          })
           response.cookies.set({
             name,
             value,
@@ -36,16 +26,6 @@ export async function middleware(request: NextRequest) {
           })
         },
         remove(name: string, options: any) {
-          request.cookies.set({
-            name,
-            value: '',
-            ...options,
-          })
-          response = NextResponse.next({
-            request: {
-              headers: request.headers,
-            },
-          })
           response.cookies.set({
             name,
             value: '',
@@ -57,7 +37,14 @@ export async function middleware(request: NextRequest) {
   )
 
   // Refresh session if expired - required for Server Components
-  await supabase.auth.getSession()
+  try {
+    const { error } = await supabase.auth.getSession()
+    if (error) {
+      console.error('[middleware] Supabase session refresh failed:', error)
+    }
+  } catch (error) {
+    console.error('[middleware] Supabase session refresh failed:', error)
+  }
 
   return response
 }

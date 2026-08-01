@@ -36,7 +36,8 @@ if (!fs.existsSync(envLocalPath)) {
   envContent.split('\n').forEach(line => {
     const trimmed = line.trim();
     if (trimmed && !trimmed.startsWith('#')) {
-      const [key, value] = trimmed.split('=');
+      const [key, ...valueParts] = trimmed.split('=');
+      const value = valueParts.join('=');
       if (key && value) {
         envVars[key] = value;
       }

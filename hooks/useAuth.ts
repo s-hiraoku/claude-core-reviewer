@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useAtom } from 'jotai'
 import { createClient } from '@/lib/supabase/client'
 import {
@@ -23,7 +23,7 @@ export function useAuth() {
   const [, setLoading] = useAtom(setLoadingAtom)
   const [, setUserProfile] = useAtom(setUserProfileAtom)
 
-  const supabase = createClient()
+  const supabase = useMemo(() => createClient(), [])
 
   useEffect(() => {
     // Get initial session
@@ -127,10 +127,9 @@ export function useAuth() {
       }
       
       if (data?.url) {
-        console.log('✅ 認証URLが生成されました:', data.url)
+        console.log('🚀 GitHub認証ページにリダイレクトします...')
+        window.location.assign(data.url)
       }
-      
-      console.log('🚀 GitHub認証ページにリダイレクトします...')
     } catch (err) {
       console.error('❌ 予期しないエラー:', err)
       throw err
