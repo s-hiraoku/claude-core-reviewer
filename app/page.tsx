@@ -140,19 +140,22 @@ export default function HomePage() {
 }
 
 function LandingAuthButton() {
-  const { signInWithGitHub, signInWithGitLab } = useAuth()
+  const { authError, signInWithGitHub, signInWithGitLab } = useAuth()
 
   return (
-    <>
-      <Button onClick={signInWithGitHub} size="lg" className="text-base px-8">
-        <Github className="mr-2 h-5 w-5" />
-        GitHubで始める
-      </Button>
-      <Button onClick={signInWithGitLab} size="lg" variant="outline" className="text-base px-8">
-        <Gitlab className="mr-2 h-5 w-5" />
-        GitLabで始める
-      </Button>
-    </>
+    <div>
+      <div className="flex flex-wrap justify-center gap-4">
+        <Button onClick={signInWithGitHub} size="lg" className="text-base px-8">
+          <Github className="mr-2 h-5 w-5" />
+          GitHubで始める
+        </Button>
+        <Button onClick={signInWithGitLab} size="lg" variant="outline" className="text-base px-8">
+          <Gitlab className="mr-2 h-5 w-5" />
+          GitLabで始める
+        </Button>
+      </div>
+      {authError && <p role="alert" className="mt-3 text-center text-sm text-red-600">{authError}</p>}
+    </div>
   )
 }
 

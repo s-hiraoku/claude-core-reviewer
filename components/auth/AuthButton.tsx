@@ -15,7 +15,7 @@ import { Github, Gitlab, LogOut, User, Settings } from 'lucide-react'
 import Link from 'next/link'
 
 export function AuthButton() {
-  const { user, userProfile, loading, signInWithGitHub, signInWithGitLab, signOut } = useAuth()
+  const { user, userProfile, loading, authError, signInWithGitHub, signInWithGitLab, signOut } = useAuth()
 
   if (loading) {
     return (
@@ -73,15 +73,18 @@ export function AuthButton() {
   }
 
   return (
-    <div className="flex space-x-2">
-      <Button onClick={signInWithGitHub} variant="outline" size="sm">
-        <Github className="mr-2 h-4 w-4" />
-        GitHub
-      </Button>
-      <Button onClick={signInWithGitLab} variant="outline" size="sm">
-        <Gitlab className="mr-2 h-4 w-4" />
-        GitLab
-      </Button>
+    <div>
+      <div className="flex space-x-2">
+        <Button onClick={signInWithGitHub} variant="outline" size="sm">
+          <Github className="mr-2 h-4 w-4" />
+          GitHub
+        </Button>
+        <Button onClick={signInWithGitLab} variant="outline" size="sm">
+          <Gitlab className="mr-2 h-4 w-4" />
+          GitLab
+        </Button>
+      </div>
+      {authError && <p role="alert" className="mt-2 text-sm text-red-600">{authError}</p>}
     </div>
   )
 }

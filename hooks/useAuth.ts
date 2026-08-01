@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useAtom } from 'jotai'
 import { createClient } from '@/lib/supabase/client'
 import {
@@ -15,6 +15,7 @@ import type { Database } from '@/types/database'
 type UserProfile = Database['public']['Tables']['user_profiles']['Row']
 
 export function useAuth() {
+  const [authError, setAuthError] = useState<string | null>(null)
   const [user] = useAtom(userAtom)
   const [session] = useAtom(sessionAtom)
   const [loading] = useAtom(loadingAtom)
@@ -109,11 +110,12 @@ export function useAuth() {
   }
 
   const signInWithGitHub = async () => {
+    setAuthError(null)
     console.log('🔐 GitHub認証を開始します...')
     console.log('リダイレクトURL:', `${window.location.origin}/auth/callback`)
     
     try {
-      const { data, error } = await supabase.auth.signInWithOAuth({
+      const { error } = await supabase.auth.signInWithOAuth({
         provider: 'github',
         options: {
           scopes: 'read:user user:email read:org repo',
@@ -125,29 +127,30 @@ export function useAuth() {
         console.error('❌ GitHub認証エラー:', error)
         throw new Error(`GitHub認証に失敗しました: ${error.message}`)
       }
-      
-      if (data?.url) {
-        console.log('🚀 GitHub認証ページにリダイレクトします...')
-        window.location.assign(data.url)
-      }
     } catch (err) {
       console.error('❌ 予期しないエラー:', err)
-      throw err
+      setAuthError(err instanceof Error ? err.message : 'GitHub認証に失敗しました')
     }
   }
 
   const signInWithGitLab = async () => {
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'gitlab',
-      options: {
-        scopes: 'read_user read_repository read_api write_repository',
-        redirectTo: `${window.location.origin}/auth/callback`
-      }
-    })
+    setAuthError(null)
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'gitlab',
+        options: {
+          scopes: 'read_user read_repository read_api write_repository',
+          redirectTo: `${window.location.origin}/auth/callback`
+        }
+      })
 
-    if (error) {
-      console.error('Error signing in with GitLab:', error)
-      throw new Error('GitLab認証に失敗しました')
+      if (error) {
+        console.error('Error signing in with GitLab:', error)
+        throw new Error('GitLab認証に失敗しました')
+      }
+    } catch (err) {
+      console.error('Error signing in with GitLab:', err)
+      setAuthError(err instanceof Error ? err.message : 'GitLab認証に失敗しました')
     }
   }
 
@@ -163,6 +166,7 @@ export function useAuth() {
     user,
     session,
     loading,
+    authError,
     userProfile,
     signInWithGitHub,
     signInWithGitLab,
